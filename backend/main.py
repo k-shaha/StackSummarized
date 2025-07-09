@@ -22,6 +22,9 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+@app.get("/health")
+async def health_check(): 
+    return{"status": "ok"}
 # Add CORS middleware for Chrome extension
 app.add_middleware(
     CORSMiddleware,
@@ -281,14 +284,21 @@ async def generate_summary(page_data: dict) -> str:
         Tags: {', '.join(page_data['tags'])}
         """
         
-        system_prompt = """You are a technical summarizer. Create a concise HTML summary of this StackOverflow question. 
+        system_prompt = """You are a technical summarizer. Create a concise summary of this StackOverflow question. Make it make sense to a programmer in a hurry. Use simple language, contractions when possible (e.g. write doesn't instead of don't), and bullet points. Also, add relevant code snippets that are correct. Extract answers from top voted answers that are correct
         Format your response as:
-        <strong>🧵 TL;DR</strong>
+        <strong> TLDR</strong>
         <ul>
         <li>Key point 1</li>
         <li>Key point 2</li>
         <li>Key point 3</li>
-        </ul>
+        Format your response as:
+
+
+        <strong>Code Snippet</strong><br>
+        <pre><code>// Your first relevant code block</code></pre>
+        <pre><code>// Your second code block (if any)</code></pre>
+
+        Use proper indentation and don’t use markdown backticks. Just pure HTML formatting.
         Keep it under 150 words total. Focus on the problem, solution approach, and key technical details."""
         
         logger.info("Generating summary with Cerebras LLM")
