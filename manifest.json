@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "StackOverflow Summarizer",
+  "version": "1.0.0",
+  "description": "AI-powered summaries for StackOverflow questions using Cerebras LLM",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://stackoverflow.com/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Summarize StackOverflow Question"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://stackoverflow.com/questions/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  }
+}
